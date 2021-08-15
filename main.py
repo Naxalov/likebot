@@ -31,6 +31,7 @@ def like_count(update, context):
         dislike += 1
     text = f"Like: {like} \nDislike: {dislike}" 
     bot.send_message(chat_id, text)
+    print(chat_id)
 
 def user_data (chat_id, like, dislike):
     file1 = open("data_file.json", r)
