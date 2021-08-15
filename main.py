@@ -9,9 +9,12 @@ from telegram.keyboardbutton import KeyboardButton
 
 TOKEN = "1920162914:AAEVHgICKGUttXJzooTQ_d-w05LFLEhrD_M"
 
-like = 0
-dislike = 0
-
+db_like = {
+    1682840775:{
+        'likes':0,
+        'dislikes':0
+    }
+}
 def start(update, context):
     bot =context.bot
     update.message.reply_html(
@@ -19,17 +22,17 @@ def start(update, context):
     return 1
 
 def like_count(update, context):
-    global like
-    global dislike
+    global db_like
+
     bot = context.bot
     user_text = update.message.text
     chat_id = update.message.chat.id
     
     if user_text == "👍":
-        like += 1
+        db_like[chat_id]['likes']+=1
     elif user_text == "👎":
-        dislike += 1
-    text = f"Like: {like} \nDislike: {dislike}" 
+        db_like[chat_id]['dislikes']+=1
+    text = f"Like: {db_like[chat_id]['likes']} \nDislike: {db_like[chat_id]['dislikes']}" 
     bot.send_message(chat_id, text)
 
 def user_data (chat_id, like, dislike):
