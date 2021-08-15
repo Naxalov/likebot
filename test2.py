@@ -1,18 +1,14 @@
-appointment1 = { 'soccer' : {
-                        'day' : 20,
-                       'month' : 'april'
-                       }
+db = {"sas":
+    {
+    "11122": 5566,
+    "65363267": 64636
+    }
+}
 
-            }
-appointment2 = { 'soccer' : {
-                        'day' : 20,
-                        'month' : 'april'
-                       },
-              'gym' : {
-                        'day' : 5,
-                        'month' : 'may'
-                       }
-            }
-appointment = {**appointment1,**appointment2}
+db.setdefault("sas",{
+    "o": 12,
+    "a": 15
+}
+)
 
-print(appointment)
+print(db)
