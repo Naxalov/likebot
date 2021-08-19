@@ -3,7 +3,7 @@ import json
 from os import write
 from telegram import bot
 from telegram.ext import Updater,MessageHandler,Filters,CommandHandler
-import telegram
+
 
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
