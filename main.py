@@ -8,13 +8,31 @@ from telegram.ext import Updater,MessageHandler,Filters,CommandHandler
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
 from telegram.keyboardbutton import KeyboardButton
-
+from tinydb import TinyDB
 TOKEN = "1920162914:AAEVHgICKGUttXJzooTQ_d-w05LFLEhrD_M"
+db = TinyDB('user.json')
 
 def start(update, context):
     bot =context.bot
+    # GET user information
+    chat_id = update.message.chat.id
+    username = update.message.chat.username
+    first_name= update.message.chat.first_name
+    last_name= update.message.chat.last_name
+    bio = update.message.chat.bio
+    #User document
+    user = {
+        'chat_id':chat_id,
+        'username':username,
+        'first_name':first_name,
+        'last_name':last_name,
+        'bio':bio
+    }
     update.message.reply_html(
         f'<b>Assalomu alaykum, {update.message.from_user.first_name}</b>\n \nMen likelarni sanaydigan botmnan. \n\nIshlatish uchun Like yoki Dislike smayliklarini yuboring')
+    
+    db.insert(user)    
+
     return 1
 
 def like_count(update, context):
