@@ -13,6 +13,8 @@ from tinydb import TinyDB
 from tinydb.queries import Query
 from tinydb.operations import delete, increment
 
+from db_test import add_user
+
 
 TOKEN = "1920162914:AAEVHgICKGUttXJzooTQ_d-w05LFLEhrD_M"
 
@@ -24,23 +26,12 @@ User = Query()
 def start(update, context):
     bot =context.bot
     # GET user information
-    chat_id = update.message.chat.id
-    username = update.message.chat.username
-    first_name= update.message.chat.first_name
-    last_name= update.message.chat.last_name
-    bio = update.message.chat.bio
-    #User document
-    user = {
-        'chat_id':chat_id,
-        'username':username,
-        'first_name':first_name,
-        'last_name':last_name,
-        'bio':bio
-    }
+    chat = update.message.chat
+    add_user(db_user,chat)
+
     update.message.reply_html(
         f'<b>Assalomu alaykum, {update.message.from_user.first_name}</b>\n \nMen likelarni sanaydigan botmnan. \n\nIshlatish uchun Like yoki Dislike smayliklarini yuboring')
     
-    db_user.insert(user)    
 
     return 1
 
