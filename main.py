@@ -3,72 +3,70 @@ import json
 from os import write
 from telegram import bot
 from telegram.ext import Updater,MessageHandler,Filters,CommandHandler
-import telegram
+
 
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
 from telegram.keyboardbutton import KeyboardButton
 from tinydb import TinyDB
+from tinydb import TinyDB
+from tinydb.queries import Query
+from tinydb.operations import delete, increment
+
+from db_test import add_user
+
+
 TOKEN = "1920162914:AAEVHgICKGUttXJzooTQ_d-w05LFLEhrD_M"
-db = TinyDB('user.json')
+
+db_user = TinyDB("user_db.json")
+db = TinyDB("like_db.json")
+
+User = Query()
 
 def start(update, context):
     bot =context.bot
     # GET user information
-    chat_id = update.message.chat.id
-    username = update.message.chat.username
-    first_name= update.message.chat.first_name
-    last_name= update.message.chat.last_name
-    bio = update.message.chat.bio
-    #User document
-    user = {
-        'chat_id':chat_id,
-        'username':username,
-        'first_name':first_name,
-        'last_name':last_name,
-        'bio':bio
-    }
+    chat = update.message.chat
+    add_user(db_user,chat)
+
     update.message.reply_html(
         f'<b>Assalomu alaykum, {update.message.from_user.first_name}</b>\n \nMen likelarni sanaydigan botmnan. \n\nIshlatish uchun Like yoki Dislike smayliklarini yuboring')
     
-    db.insert(user)    
 
     return 1
 
 def like_count(update, context):
-
-    db_like_file =open("data_file.json", "r")
-    db_like =json.loads(db_like_file.read())
-    print(db_like)
-    db_like_file.close()
     bot = context.bot
     user_text = update.message.text
+    User = Query()
     chat_id = update.message.chat.id
-    db_like.setdefault(str(chat_id),{
+
+   
+    db.insert({
+        "user_id": chat_id,
         "likes":0,
         "dislikes":0,
         "messages":0,
         "user_name": update.message.from_user.first_name
     })
-    print(db_like)
+
+    likes = db.search(User.user_id == chat_id)[0]["likes"]
+    dislikes = db.search(User.user_id == chat_id)[0]["dislikes"]
+    messages = db.search(User.user_id == chat_id)[0]["messages"]
+    print(db.all)
     if user_text == "👍":
-        db_like[str(chat_id)]['likes']+=1
+        db.update(increment("likes"), User.user_id == chat_id)
     elif user_text == "👎":
-        db_like[str(chat_id)]['dislikes']+=1
+        db.update(increment("dislikes"), User.user_id == chat_id)
     else:
-        db_like[str(chat_id)]['messages']+=1
-    text = f"\nIsm:{update.message.from_user.first_name}\n\nLikelar soni 👍: {db_like[str(chat_id)]['likes']} \nDislikelar soni 👎: {db_like[str(chat_id)]['dislikes']} \nXabarlar soni: {db_like[str(chat_id)]['messages']}" 
+        db.update(increment("messages"), User.user_id == chat_id)
+
+    text = f"\nIsm:{update.message.from_user.first_name}\n\nLikelar soni 👍: {likes}\nDislikelar soni 👎:{dislikes} \nXabarlar soni: {messages}" 
     bot.send_message(chat_id, text)
-    db_like_file =open("data_file.json", "w")
-
-    db_like_file.write(json.dumps(db_like))
-
-    db_like_file.close()
+  
     print(chat_id)
 
 
-def user_data (chat_id, like, dislike):
-    file1 = open("data_file.json", r)
 
 
 def echo(update,context):
